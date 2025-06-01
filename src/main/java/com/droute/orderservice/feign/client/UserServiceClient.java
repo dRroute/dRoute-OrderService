@@ -9,7 +9,10 @@ import com.droute.orderservice.config.UserServiceFeignConfig;
 import com.droute.orderservice.dto.response.CommonResponseDto;
 
 @Component
-@FeignClient(name = "droute-cloud-gateway", path = "/api/user", configuration = UserServiceFeignConfig.class)
+@FeignClient(name = "droute-cloud-gateway",
+             path = "/api/user",
+             contextId = "userServiceClient",
+             configuration = UserServiceFeignConfig.class)
 public interface UserServiceClient {
 
     @PostMapping("/courier/{courierId}/exists")
