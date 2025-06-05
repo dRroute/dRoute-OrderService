@@ -1,6 +1,6 @@
 package com.droute.orderservice.enums;
 public enum JourneyStatus {
-    PENDING,
+    NOT_STARTED,
     IN_PROGRESS,
     COMPLETED,
     CANCELLED,

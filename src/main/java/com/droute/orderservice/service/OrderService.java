@@ -1,5 +1,6 @@
 package com.droute.orderservice.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.droute.orderservice.dto.request.OrderRequestDto;
 import com.droute.orderservice.dto.request.PaymentRequestDto;
+import com.droute.orderservice.dto.response.AllJourneysOrderResponseDto;
+import com.droute.orderservice.dto.response.OrderDetailsResponseDto;
 import com.droute.orderservice.dto.response.OrderResponseDto;
 import com.droute.orderservice.dto.response.PaymentResponseDto;
 import com.droute.orderservice.entity.Order;
@@ -133,5 +136,35 @@ public class OrderService {
                         .build() 
                     : null)
                 .build();
+    }
+
+
+    public AllJourneysOrderResponseDto getOrderByJourneyId(Long id) {
+        
+
+        var orderResponse = new AllJourneysOrderResponseDto();
+        orderResponse.setJourneyDetails(driverServiceClient.getJourneyDetailsById(id).getData());
+        var orderDetails = orderRepository.findAllByJourneyId(id);
+        if (orderDetails.isEmpty()) {
+            throw new EntityNotFoundException("No orders found for journey ID: " + id);
+        }
+        List<OrderDetailsResponseDto> ordersDetail = new ArrayList<>();
+        for (Order order : orderDetails) {
+            if (order.getJourneyId().equals(id)) {
+                var userDetails = userServiceClient.getUserDetailsByCourierId(order.getCourierId());
+
+                var data = OrderDetailsResponseDto.builder()
+                .order(order)
+                .user(userDetails.getData())
+                .build();
+
+                ordersDetail.add(data);
+
+            }              
+            
+        }
+
+        orderResponse.setOrderDetails(ordersDetail);
+        return orderResponse;
     }
 }

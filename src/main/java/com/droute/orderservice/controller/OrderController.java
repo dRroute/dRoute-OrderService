@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.droute.orderservice.dto.request.OrderRequestDto;
+import com.droute.orderservice.dto.response.AllJourneysOrderResponseDto;
+import com.droute.orderservice.dto.response.CommonResponseDto;
 import com.droute.orderservice.dto.response.OrderResponseDto;
+import com.droute.orderservice.dto.response.ResponseBuilder;
 import com.droute.orderservice.enums.OrderStatus;
 import com.droute.orderservice.service.OrderService;
 
@@ -34,10 +37,18 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponseDto> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<CommonResponseDto<OrderResponseDto>> getOrderById(@PathVariable Long id) {
         OrderResponseDto response = orderService.getOrderById(id);
-        return ResponseEntity.ok(response);
+        return ResponseBuilder.success(HttpStatus.OK, "Order details fetched successfully", response);
     }
+
+    @GetMapping("/journey/{journeyId}")
+    public ResponseEntity<CommonResponseDto<AllJourneysOrderResponseDto>> getOrderDetailsJourneyId(@PathVariable Long journeyId) {
+        var response = orderService.getOrderByJourneyId(journeyId);
+        return ResponseBuilder.success(HttpStatus.OK, "Order details fetched successfully", response);
+    }
+
+
 
     @GetMapping
     public ResponseEntity<List<OrderResponseDto>> getAllOrders() {

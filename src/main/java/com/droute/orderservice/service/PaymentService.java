@@ -23,6 +23,7 @@ public class PaymentService {
 
         @Transactional
         public PaymentResponseDto processPayment(PaymentRequestDto paymentRequest) {
+                
                 Order order = orderRepository.findById(paymentRequest.getOrderId())
                                 .orElseThrow(() -> new RuntimeException(
                                                 "Order not found with id: " + paymentRequest.getOrderId()));
@@ -54,7 +55,7 @@ public class PaymentService {
         }
 
         @Transactional
-        public PaymentResponseDto updatePaymentStatus(String paymentId, PaymentStatus status) {
+        public PaymentResponseDto updatePaymentStatus(Long paymentId, PaymentStatus status) {
                 Payment payment = paymentRepository.findById(paymentId)
                                 .orElseThrow(() -> new RuntimeException("Payment not found with id: " + paymentId));
 
