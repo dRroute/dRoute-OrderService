@@ -6,7 +6,14 @@ public enum OrderStatus {
     IN_PROGRESS,
     COMPLETED,
     CANCELLED,
-    DELAYED;
+    DELAYED,
+    //Courier status
+    SAVED,
+    REQUESTED,
+    REJECTED,
+    PICKED_UP,
+    DELIVERED;
+    
 
     public static OrderStatus fromString(String status) {
         try {

@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.droute.orderservice.dto.request.OrderRequestDto;
+import com.droute.orderservice.dto.request.NewOrderRequestDto;
+import com.droute.orderservice.dto.response.AllJourneysOrderResponseDto;
+import com.droute.orderservice.dto.response.CommonResponseDto;
+import com.droute.orderservice.dto.response.OrderDetailsResponseDto;
 import com.droute.orderservice.dto.response.OrderResponseDto;
+import com.droute.orderservice.dto.response.ResponseBuilder;
 import com.droute.orderservice.enums.OrderStatus;
 import com.droute.orderservice.service.OrderService;
 
@@ -27,16 +31,17 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping
-    public ResponseEntity<OrderResponseDto> createOrder(@RequestBody OrderRequestDto orderRequestDto) {
-        OrderResponseDto response = orderService.createOrder(orderRequestDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    @PostMapping("")
+    public ResponseEntity<CommonResponseDto<OrderDetailsResponseDto>> createOrder(@RequestBody NewOrderRequestDto orderRequestDto) {
+        System.out.println(orderRequestDto);
+        var response = orderService.createOrder(orderRequestDto);
+        return ResponseBuilder.success(HttpStatus.CREATED, "Order created successfully", response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponseDto> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<CommonResponseDto<OrderResponseDto>> getOrderById(@PathVariable Long id) {
         OrderResponseDto response = orderService.getOrderById(id);
-        return ResponseEntity.ok(response);
+        return ResponseBuilder.success(HttpStatus.OK, "Order details fetched successfully", response);
     }
 
     @GetMapping
@@ -45,13 +50,23 @@ public class OrderController {
         return ResponseEntity.ok(responses);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<OrderResponseDto> updateOrder(
-            @PathVariable Long id, 
-            @RequestBody OrderRequestDto orderRequestDtoOrderRequestDto) {
-        OrderResponseDto response = orderService.updateOrder(id, orderRequestDtoOrderRequestDto);
-        return ResponseEntity.ok(response);
+    @PutMapping("/{orderId}")
+    public ResponseEntity<CommonResponseDto<OrderDetailsResponseDto>> updateOrder(
+            @PathVariable Long orderId, 
+            @RequestBody(required = false) NewOrderRequestDto orderRequestDto, @RequestParam(required = false) String status) {
+
+        var response = new OrderDetailsResponseDto ();
+        if(orderRequestDto == null && status != null && status != ""){
+            response = orderService.updateOrderStatus(orderId, OrderStatus.valueOf(status.toUpperCase()));
+        }else{
+
+            response = orderService.updateOrder(orderId, orderRequestDto);
+        }
+
+        System.out.println("response = " + response);
+        return ResponseBuilder.success(HttpStatus.OK, "Order details updated",response);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
@@ -59,11 +74,23 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<OrderResponseDto> updateOrderStatus(
-            @PathVariable Long id,
-            @RequestParam OrderStatus status) {
-        OrderResponseDto response = orderService.updateOrderStatus(id, status);
-        return ResponseEntity.ok(response);
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<CommonResponseDto<List<OrderDetailsResponseDto>>> getOrderDetailsByUserId(
+            @PathVariable Long userId,
+            @RequestParam String status) {
+        List<OrderDetailsResponseDto> response = orderService.getOrderDetailsByUserId(userId, status);
+        
+        return ResponseBuilder.success(HttpStatus.OK, "Order details found", response);
+    }
+
+    // this API is consumed by Driver to see the order details
+    @GetMapping("/journey/{journeyId}")
+    public ResponseEntity<CommonResponseDto<List<OrderDetailsResponseDto>>>   getOrderDetailsByJourneyId(
+            @PathVariable Long journeyId,
+            @RequestParam String status) {
+        System.out.println("journey order called with status = "+ status + " id = "+7);
+        var response = orderService.getOrderDetailsByJourneyId(journeyId, status);
+        return ResponseBuilder.success(HttpStatus.OK, "Order details found", response);
     }
 }

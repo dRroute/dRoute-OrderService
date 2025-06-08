@@ -1,4 +1,5 @@
-package com.droute.orderservice.enums;
+package com.droute.orderservice.dto.response;
+
 public enum JourneyStatus {
     NOT_STARTED,
     IN_PROGRESS,
@@ -6,3 +7,4 @@ public enum JourneyStatus {
     CANCELLED,
     DELAYED;
 }
+

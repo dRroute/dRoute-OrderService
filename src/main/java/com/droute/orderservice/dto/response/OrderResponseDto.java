@@ -14,7 +14,7 @@ public class OrderResponseDto {
     private Long id;
     private Long courierId;
     private Long journeyId;
-    private OrderStatus orderStatus;
+    private OrderStatus status;
     private Double estimatedFare;
     private Double offeredFare;
     private PaymentResponseDto payment;
