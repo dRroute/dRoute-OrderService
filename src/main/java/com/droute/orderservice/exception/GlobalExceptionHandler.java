@@ -51,6 +51,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(UserServiceException.class)
 	public ResponseEntity<String> handleGenericUserService(UserServiceException ex) {
+		logger.error("UserServiceException: " + ex.getMessage(), ex);
+
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
 	}
 

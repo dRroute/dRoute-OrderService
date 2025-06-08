@@ -1,5 +1,7 @@
 package com.droute.orderservice.dto.response;
 
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +25,6 @@ public class CompleteDriverDetailsResponseDto {
 	private String drivingLicenceNo;
 	private String vehicleName;
 	private String vehicleType;
-	private String rcNumber;
 
 	private String accountHolderName;
 	private String driverBankName;
@@ -31,4 +32,7 @@ public class CompleteDriverDetailsResponseDto {
 	private String driverIfsc;
 	private String driverUpiId;
 	private String aadharNumber;
+	private String profileStatus; // Enum for ACTIVE, INACTIVE, BLOCKED, etc.
+
+	private Set<DocumentResponseDto> documents;
 }

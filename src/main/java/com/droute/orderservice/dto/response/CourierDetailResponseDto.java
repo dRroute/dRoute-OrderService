@@ -3,6 +3,7 @@ package com.droute.orderservice.dto.response;
 
 import java.time.LocalDateTime;
 
+import com.droute.orderservice.enums.CourierStatus;
 import com.droute.orderservice.enums.DimensionUnit;
 import com.droute.orderservice.enums.WeightUnit;
 
@@ -20,6 +21,7 @@ import lombok.ToString;
 public class CourierDetailResponseDto {
     private Long courierId;
     private Long userId;
+    private UserEntityResponseDto user;
     private String courierSourceAddress;
     private String courierSourceCoordinate;
     private String courierDestinationAddress;
@@ -31,6 +33,7 @@ public class CourierDetailResponseDto {
     private Double courierWeight;
     private WeightUnit courierWeightUnit;
     private Double courierValue;
+    private CourierStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.droute.orderservice.config.DriverServiceFeignConfig;
 import com.droute.orderservice.dto.response.CommonResponseDto;
+import com.droute.orderservice.dto.response.FilteredJourneyDetailsResponseDto;
 import com.droute.orderservice.dto.response.JourneyDetailResponseDto;
 
 @Component
@@ -16,11 +17,15 @@ import com.droute.orderservice.dto.response.JourneyDetailResponseDto;
              configuration = DriverServiceFeignConfig.class)
 public interface DriverServiceClient {
 
-    @GetMapping("/journey-details/exists/{journeyId}")
+    @GetMapping("/journey-details/{journeyId}/exists")
     public CommonResponseDto<Boolean> journeyExistsById(@PathVariable Long journeyId);
 
 
     @GetMapping("/journey-details/{journeyId}")
     public CommonResponseDto<JourneyDetailResponseDto> getJourneyDetailsById(@PathVariable Long journeyId);
+    
+    
+    @GetMapping("/journey-details/{journeyId}/driver-detail")
+    public CommonResponseDto<FilteredJourneyDetailsResponseDto> getJourneyDetailsWithDriverDetailsByJourneyId(@PathVariable Long journeyId);
 
 }

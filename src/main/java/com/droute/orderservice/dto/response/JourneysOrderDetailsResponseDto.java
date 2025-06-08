@@ -12,10 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderDetailsResponseDto {
-    private FilteredJourneyDetailsResponseDto journeyDetails;
+public class JourneysOrderDetailsResponseDto {
+    
     private Order order;
     private CourierDetailResponseDto courier;
-
-
+    
 }
