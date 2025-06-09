@@ -17,7 +17,9 @@ import com.droute.orderservice.dto.response.OrderDetailsResponseDto;
 import com.droute.orderservice.dto.response.OrderResponseDto;
 import com.droute.orderservice.dto.response.PaymentResponseDto;
 import com.droute.orderservice.entity.Order;
+import com.droute.orderservice.entity.Payment;
 import com.droute.orderservice.enums.OrderStatus;
+import com.droute.orderservice.enums.PaymentStatus;
 import com.droute.orderservice.feign.client.DriverServiceClient;
 import com.droute.orderservice.feign.client.UserServiceClient;
 import com.droute.orderservice.repository.OrderRepository;
@@ -103,7 +105,7 @@ public class OrderService {
         @Transactional
         public OrderDetailsResponseDto updateOrder(Long id, NewOrderRequestDto orderRequest) {
                 Order existingOrder = orderRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
+                                .orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + id));
 
                 existingOrder.setCourierId(
                                 Utils.getUpdatedValue(orderRequest.getCourierId(), existingOrder.getCourierId()));
@@ -145,6 +147,18 @@ public class OrderService {
                                 existingOrder.getCourierImageUrl2()));
                 // existingOrder.setPayment(Utils.getUpdatedValue(orderRequest.getPaymentRequestDto(),
                 // null));
+                var paymentDetails = orderRequest.getPaymentRequestDto();
+                if(paymentDetails != null){
+                        var payment = Payment.builder()
+                                                .id(existingOrder.getPayment() != null ? existingOrder.getPayment().getId() : -1)
+                                                .order(existingOrder)
+                                                .amount(paymentDetails.getAmount())
+                                                .paymentMethod(paymentDetails.getPaymentMethod())
+                                                .transactionId(paymentDetails.getTransactionId())
+                                                .status(paymentDetails.getStatus())
+                                                .build();
+                        existingOrder.setPayment(payment);
+                }
 
                 Order updatedOrder = orderRepository.save(existingOrder);
 
