@@ -64,7 +64,24 @@ public class OrderController {
         }
 
         System.out.println("response = " + response);
-        return ResponseBuilder.success(HttpStatus.OK, "Order details updated",response);
+        return ResponseBuilder.success(HttpStatus.OK, "Order details updated", response);
+    }
+
+    @PostMapping("/{orderId}")
+    public ResponseEntity<CommonResponseDto<OrderDetailsResponseDto>> updateOrderByPost(
+            @PathVariable Long orderId, 
+            @RequestBody(required = false) NewOrderRequestDto orderRequestDto, @RequestParam(required = false) String status) {
+
+        var response = new OrderDetailsResponseDto ();
+        if(orderRequestDto == null && status != null && status != ""){
+            response = orderService.updateOrderStatus(orderId, OrderStatus.valueOf(status.toUpperCase()));
+        }else{
+
+            response = orderService.updateOrder(orderId, orderRequestDto);
+        }
+
+        System.out.println("response = " + response);
+        return ResponseBuilder.success(HttpStatus.OK, "Order details updated", response);
     }
 
 

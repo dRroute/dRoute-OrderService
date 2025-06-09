@@ -1,6 +1,7 @@
 package com.droute.orderservice.entity;
 
 import com.droute.orderservice.enums.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "order")
 @Builder
 @Entity
 public class Payment {
@@ -23,10 +24,13 @@ public class Payment {
 
     @OneToOne
     @JoinColumn(name = "order_id")
+    @JsonIgnore
     private Order order;
     
     private double amount;
     private String paymentMethod; // e.g., "CREDIT_CARD", "DEBIT_CARD", "PAYPAL"
+    
+    @Enumerated(EnumType.STRING)
     private PaymentStatus status; // e.g., "PENDING", "COMPLETED", "FAILED"
     private String transactionId; // Unique identifier for the payment transaction
 }
